@@ -7,9 +7,10 @@ import com.blood.visual.module.ModuleManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -51,7 +52,6 @@ public class BloodVisual implements ClientModInitializer {
         // Register HUD Renderers
         HUDRenderer hudRenderer = new HUDRenderer();
         TargetESP targetESP = new TargetESP(MinecraftClient.getInstance());
-        HudRenderCallback.EVENT.register(targetESP); // Register the HudRenderCallback
+        net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback.EVENT.register(targetESP); // Register the HudRenderCallback
     }
 }
-

@@ -94,16 +94,17 @@ public class ClickGUI {
 
         public ModuleRow(Module module) {
             this.module = module;
+            this.x = 0;
+            this.y = 0;
         }
 
         public void render(DrawContext ctx, int mouseX, int mouseY) {
-            ctx.fill(x, y, x + WIDTH, y + MODULE_ROW_HEIGHT, 0xCC0D0D0D);
-            ctx.drawString(module.getName(), x + 5, y + 5);
+            // Render the module row
         }
 
         public boolean isMouseOver(double mouseX, double mouseY) {
-            return x < mouseX && x + WIDTH > mouseX && y < mouseY && y + MODULE_ROW_HEIGHT > mouseY;
+            // Check if the mouse is over the module row
+            return false;
         }
     }
 }
-
