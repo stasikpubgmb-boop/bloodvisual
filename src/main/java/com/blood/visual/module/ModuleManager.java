@@ -1,43 +1,36 @@
 package com.blood.visual.module;
 
+import com.blood.visual.module.impl.movement.BunnyHop;
+import com.blood.visual.module.impl.movement.Fly;
+import com.blood.visual.module.impl.movement.NoFall;
+import com.blood.visual.module.impl.movement.Sprint;
+import com.blood.visual.module.impl.movement.Speed;
+import com.blood.visual.module.impl.visual.ESP;
+import com.blood.visual.module.impl.visual.Fullbright;
+import com.blood.visual.module.impl.visual.NoFog;
+import com.blood.visual.module.impl.visual.TargetESP;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleManager {
-    private final List<Module> modules;
+    private List<Module> modules;
 
     public ModuleManager() {
-        this.modules = new ArrayList<>();
-        init();
-    }
+        modules = new ArrayList<>();
 
-    public void init() {
-        // Initialize modules here
+        modules.add(new TargetESP());
+        modules.add(new ESP());
+        modules.add(new Fullbright());
+        modules.add(new NoFog());
+        modules.add(new Speed());
+        modules.add(new Sprint());
+        modules.add(new Fly());
+        modules.add(new NoFall());
+        modules.add(new BunnyHop());
     }
 
     public List<Module> getModules() {
         return modules;
-    }
-
-    public List<Module> getByCategory(Category category) {
-        List<Module> modulesInCategory = new ArrayList<>();
-        for (Module module : modules) {
-            if (module.getCategory() == category) {
-                modulesInCategory.add(module);
-            }
-        }
-        return modulesInCategory;
-    }
-
-    public void onTick() {
-        for (Module module : modules) {
-            module.onTick();
-        }
-    }
-
-    public void onKey(int key) {
-        for (Module module : modules) {
-            module.onKey(key);
-        }
     }
 }
