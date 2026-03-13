@@ -1,30 +1,43 @@
 plugins {
     id 'fabric-loom' version '1.10.1'
-    id 'maven-publish'
-}
-
-version = '1.0.0'
-group = 'com.blood.visual'
-
-base {
-    archivesName = 'bloodvisual'
 }
 
 repositories {
-    maven { url 'https://maven.fabricmc.net/' }
-    maven { url 'https://libraries.minecraft.net/' }
     mavenCentral()
-    google()
+    maven {
+        url "https://maven.fabricmc.net/"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/releases"
+    }
 }
 
 dependencies {
-    minecraft 'com.mojang:minecraft:1.21.4'
-    mappings 'net.fabricmc:yarn:1.21.4+build.8:v2'
-    modImplementation 'net.fabricmc:fabric-loader:0.16.9'
-    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.110.0+1.21.4'
+    modImplementation "net.fabricmc:fabric-loader:1.21.4"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.77.1+1.21.4"
+    modImplementation "net.fabricmc.fabric-api:fabric-renderer-registries-v1:1.17.1+1.21.4"
+    include "net.fabricmc.fabric-api:fabric-renderer-registries-v1:1.17.1+1.21.4"
+    modImplementation "com.google.code.findbugs:jsr305:3.0.2"
+    implementation project(':fabricloader')
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('**/mod.json') {
+        filter(ReplaceTokens, tokens: [version: project.version])
+    }
+}
+
+jar {
+    from('src/main/resources') {
+        include '**/*'
+        exclude 'META-INF/**'
+    }
+    archiveName 'BloodVisual-${version}.jar'
+    base {
+        archivesName = 'BloodVisual-${version}'
+    }
 }

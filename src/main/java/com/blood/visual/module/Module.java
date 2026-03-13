@@ -62,3 +62,11 @@ public abstract class Module {
 
     public void onTick() {}
 }
+
+enum Category {
+    COMBAT,
+    MOVEMENT,
+    VISUAL
+}
+
+interface Setting {}

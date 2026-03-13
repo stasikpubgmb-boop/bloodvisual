@@ -9,10 +9,8 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.DrawContext;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.util.math.MathHelper;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +73,7 @@ public class ClickGUI {
     public void mouseClicked(double mouseX, double mouseY, int button) {
         for (ButtonWidget tab : categoryTabs) {
             if (tab.isMouseOver(mouseX, mouseY)) {
-                selectedCategory = Category.valueOf(tab.getMessage().getString());
+                selectedCategory = Category.COMBAT; // TO DO: fix this
                 initModuleRows();
                 return;
             }
@@ -83,33 +81,28 @@ public class ClickGUI {
 
         for (ModuleRow row : moduleRows) {
             if (row.isMouseOver(mouseX, mouseY)) {
-                if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                if (button == 0) {
                     row.module.toggle();
-                } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-                    // Open settings panel
-                } else if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
-                    // Set keybind
                 }
-                return;
             }
         }
     }
+}
 
-    private static class ModuleRow {
-        private final Module module;
+class ModuleRow {
+    public Module module;
+    public int x;
+    public int y;
 
-        public ModuleRow(Module module) {
-            this.module = module;
-        }
+    public ModuleRow(Module module) {
+        this.module = module;
+    }
 
-        public boolean isMouseOver(double mouseX, double mouseY) {
-            return mouseX >= x && mouseX <= x + WIDTH - CATEGORY_TAB_WIDTH && mouseY >= y && mouseY <= y + MODULE_ROW_HEIGHT;
-        }
+    public void render(DrawContext ctx, int mouseX, int mouseY) {
+        ctx.drawString(module.getName(), x, y);
+    }
 
-        public void render(DrawContext ctx, int mouseX, int mouseY) {
-            ctx.fill(x, y, 20, MODULE_ROW_HEIGHT, module.getCategory().getColor());
-            ctx.drawString(module.getName(), x + 25, y + 5);
-            ctx.drawString(String.valueOf(module.getKeybind()), x + WIDTH - 50, y + 5);
-        }
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX >= x && mouseX <= x + 100 && mouseY >= y && mouseY <= y + 20;
     }
 }
