@@ -1,6 +1,7 @@
 package com.blood.visual.module.impl.movement;
 
 import com.blood.visual.module.Module;
+import com.blood.visual.module.Category;
 import com.blood.visual.module.ModuleManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.GameOptions;

@@ -1,6 +1,7 @@
 package com.blood.visual.module.impl.visual;
 import com.blood.visual.module.Category;
 import com.blood.visual.module.Module;
+import com.blood.visual.module.Category;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 public class ESP extends Module {
