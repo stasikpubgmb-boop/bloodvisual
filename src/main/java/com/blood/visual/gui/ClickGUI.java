@@ -1,4 +1,4 @@
-package com.blood.visual.gui;
+package com/blood/visual/gui;
 
 import com.blood.visual.module.Module;
 import com.blood.visual.module.ModuleManager;
@@ -99,12 +99,12 @@ public class ClickGUI {
         }
 
         public void render(DrawContext ctx, int mouseX, int mouseY) {
-            // Render the module row
+            ctx.fill(x, y, x + 100, y + 20, 0x88000000);
+            ctx.drawString(module.getName(), x + 5, y + 5);
         }
 
         public boolean isMouseOver(double mouseX, double mouseY) {
-            // Check if the mouse is over the module row
-            return false;
+            return mouseX >= x && mouseX <= x + 100 && mouseY >= y && mouseY <= y + 20;
         }
     }
 }
