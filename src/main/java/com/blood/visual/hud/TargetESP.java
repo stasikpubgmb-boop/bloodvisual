@@ -36,11 +36,6 @@ public class TargetESP implements HudRenderCallback {
             // Health bar
             int healthBarWidth = (int) ((health / (float) maxHealth) * 90);
             ctx.fill(x + 5, y + 15, x + 5 + healthBarWidth, y + 20, getHealthColor(health, maxHealth));
-
-            // Armor bar
-            ctx.fill(x + 5, y + 20, x + 5 + 90, y + 25, 0x88888888);
-
-            // TO DO: implement ping display
         }
     }
 

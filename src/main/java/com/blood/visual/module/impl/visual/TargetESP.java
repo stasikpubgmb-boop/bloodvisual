@@ -14,7 +14,7 @@ public class TargetESP extends Module {
     private PlayerEntity currentTarget;
 
     public TargetESP() {
-        super("TargetESP", com.blood.visual.Category.VISUAL);
+        super("TargetESP", Category.VISUAL);
     }
 
     @Override

@@ -5,12 +5,12 @@ import java.util.List;
 
 public abstract class Module {
     private String name;
-    private com.blood.visual.Category category;
+    private Category category;
     private boolean enabled;
     private List<Setting> settings;
     private int key = -1;
 
-    public Module(String name, com.blood.visual.Category category) {
+    public Module(String name, Category category) {
         this.name = name;
         this.category = category;
         this.settings = new ArrayList<>();
@@ -28,7 +28,7 @@ public abstract class Module {
         return this.name;
     }
 
-    public com.blood.visual.Category getCategory() {
+    public Category getCategory() {
         return this.category;
     }
 
@@ -64,5 +64,11 @@ public abstract class Module {
 
     public static interface Setting {
         // Add methods if needed
+    }
+
+    public enum Category {
+        COMBAT,
+        VISUAL,
+        MOVEMENT
     }
 }

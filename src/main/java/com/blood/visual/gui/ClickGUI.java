@@ -1,6 +1,5 @@
 package com.blood.visual.gui;
 
-import com.blood.visual.module.Category;
 import com.blood.visual.module.Module;
 import com.blood.visual.module.ModuleManager;
 import net.minecraft.client.gui.Element;
@@ -25,21 +24,21 @@ public class ClickGUI {
     private final ModuleManager moduleManager;
     private final List<ButtonWidget> categoryTabs;
     private final List<ModuleRow> moduleRows;
-    private Category selectedCategory;
+    private Module.Category selectedCategory;
 
     public ClickGUI(Screen parent, ModuleManager moduleManager) {
         this.parent = parent;
         this.moduleManager = moduleManager;
         this.categoryTabs = new ArrayList<>();
         this.moduleRows = new ArrayList<>();
-        this.selectedCategory = Category.COMBAT;
+        this.selectedCategory = Module.Category.COMBAT;
 
         initCategoryTabs();
         initModuleRows();
     }
 
     private void initCategoryTabs() {
-        for (Category category : Category.values()) {
+        for (Module.Category category : Module.Category.values()) {
             ButtonWidget tab = new ButtonWidget(0, 0, CATEGORY_TAB_WIDTH, CATEGORY_TAB_HEIGHT, category.name());
             tab.active = category == selectedCategory;
             categoryTabs.add(tab);
@@ -73,7 +72,7 @@ public class ClickGUI {
     public void mouseClicked(double mouseX, double mouseY, int button) {
         for (ButtonWidget tab : categoryTabs) {
             if (tab.isMouseOver(mouseX, mouseY)) {
-                selectedCategory = Category.COMBAT; // TO DO: fix this
+                selectedCategory = Module.Category.COMBAT; // TO DO: fix this
                 initModuleRows();
                 return;
             }
@@ -87,23 +86,25 @@ public class ClickGUI {
             }
         }
     }
-}
 
-class ModuleRow {
-    public Module module;
-    public int x;
-    public int y;
+    class ModuleRow {
+        public Module module;
+        public int x;
+        public int y;
 
-    public ModuleRow(Module module) {
-        this.module = module;
-    }
+        public ModuleRow(Module module) {
+            this.module = module;
+            this.x = 0;
+            this.y = 0;
+        }
 
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX > x && mouseX < x + 100 && mouseY > y && mouseY < y + 20;
-    }
+        public boolean isMouseOver(double mouseX, double mouseY) {
+            return mouseX > x && mouseX < x + 200 && mouseY > y && mouseY < y + 20;
+        }
 
-    public void render(DrawContext ctx, int offsetX, int offsetY) {
-        ctx.fill(x + offsetX, y + offsetY, x + 100 + offsetX, y + 20 + offsetY, 0xCC0D0D0D);
-        ctx.drawStrings(module.getName(), x + 10 + offsetX, y + 5 + offsetY);
+        public void render(DrawContext ctx, double mouseX, double mouseY) {
+            ctx.fill(x, y, x + 200, y + 20, 0xCC0D0D0D);
+            ctx.drawString(module.getName(), x + 5, y + 5);
+        }
     }
 }
