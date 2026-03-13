@@ -11,7 +11,7 @@ public class Speed extends Module {
     private double speed;
 
     public Speed() {
-        super("Speed", Module.Category.MOVEMENT);
+        super("Speed", Category.MOVEMENT);
         speed = 1.1;
     }
 
