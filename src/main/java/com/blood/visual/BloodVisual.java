@@ -1,5 +1,9 @@
 package com.blood.visual;
 
+import com.blood.visual.gui.ClickGUI;
+import com.blood.visual.hud.HUDRenderer;
+import com.blood.visual.hud.TargetESP;
+import com.blood.visual.module.ModuleManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -39,5 +43,12 @@ public class BloodVisual implements ClientModInitializer {
                 module.onTick();
             }
         });
+
+        // Register ClickGUI
+        ClickGUI clickGUI = new ClickGUI(null, moduleManager);
+
+        // Register HUD Renderers
+        HUDRenderer hudRenderer = new HUDRenderer(moduleManager);
+        TargetESP targetESP = new TargetESP(MinecraftClient.getInstance());
     }
 }
