@@ -20,6 +20,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.77.1+1.21.4"
     modImplementation "net.fabricmc.fabric-api:fabric-renderer-registries-v1:1.17.1+1.21.4"
     modImplementation "com.google.code.findbugs:jsr305:3.0.2"
+    mappings "net.fabricmc:yarn:1.21.4+build.27"
 }
 
 processResources {
@@ -34,8 +35,5 @@ jar {
         include '**/*'
         exclude 'META-INF/**'
     }
-    archivesName = 'BloodVisual-${version}.jar'
-    base {
-        archivesName = 'BloodVisual-${version}'
-    }
+    archiveName = 'BloodVisual-${version}.jar'
 }
