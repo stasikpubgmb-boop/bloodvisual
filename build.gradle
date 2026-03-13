@@ -33,7 +33,7 @@ processResources {
 jar {
     from('src/main/resources') {
         include '**/*'
-        exclude 'META-INFRINGEMENT/**'
+        exclude 'META-INF/**'
     }
     archiveName = "BloodVisual-${version}.jar"
 }
