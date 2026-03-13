@@ -4,8 +4,9 @@ plugins {
 
 group 'com.blood.visual'
 version '1.0.0'
+
 archiving {
-    archivesName = "bloodvisual"
+    archivesBaseName = "bloodvisual"
 }
 
 repositories {
