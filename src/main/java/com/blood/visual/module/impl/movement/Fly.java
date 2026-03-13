@@ -13,20 +13,20 @@ public class Fly extends Module {
     @Override
     public void onEnable() {
         PlayerEntity player = MinecraftClient.getInstance().player;
-        player.abilities.flying = true; // Access abilities through player
-        player.abilities.allowFlying = true; // Access abilities through player
+        player.getAbilities().flying = true; // Access abilities through getAbilities()
+        player.getAbilities().allowFlying = true; // Access abilities through getAbilities()
     }
 
     @Override
     public void onDisable() {
         PlayerEntity player = MinecraftClient.getInstance().player;
-        player.abilities.flying = false; // Access abilities through player
-        player.abilities.allowFlying = false; // Access abilities through player
+        player.getAbilities().flying = false; // Access abilities through getAbilities()
+        player.getAbilities().allowFlying = false; // Access abilities through getAbilities()
     }
 
     @Override
     public void onTick() {
         PlayerEntity player = MinecraftClient.getInstance().player;
-        player.abilities.flying = true; // Access abilities through player
+        player.getAbilities().flying = true; // Access abilities through getAbilities()
     }
 }
