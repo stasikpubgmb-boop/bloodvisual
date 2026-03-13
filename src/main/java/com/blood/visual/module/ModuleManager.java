@@ -1,24 +1,15 @@
 package com.blood.visual.module;
 
-import com.blood.visual.module.impl.movement.BunnyHop;
-import com.blood.visual.module.impl.movement.Fly;
-import com.blood.visual.module.impl.movement.NoFall;
-import com.blood.visual.module.impl.movement.Sprint;
-import com.blood.visual.module.impl.movement.Speed;
-import com.blood.visual.module.impl.visual.ESP;
-import com.blood.visual.module.impl.visual.Fullbright;
-import com.blood.visual.module.impl.visual.NoFog;
-import com.blood.visual.module.impl.visual.TargetESP;
-
+import com.blood.visual.module.impl.movement.*;
+import com.blood.visual.module.impl.visual.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ModuleManager {
-    private List<Module> modules;
+    private static final List<Module> modules = new ArrayList<>();
 
-    public ModuleManager() {
-        modules = new ArrayList<>();
-
+    public static void init() {
         modules.add(new TargetESP());
         modules.add(new ESP());
         modules.add(new Fullbright());
@@ -30,7 +21,17 @@ public class ModuleManager {
         modules.add(new BunnyHop());
     }
 
-    public List<Module> getModules() {
-        return modules;
+    public static List<Module> getModules() { return modules; }
+
+    public static List<Module> getByCategory(Category cat) {
+        return modules.stream().filter(m -> m.getCategory() == cat).collect(Collectors.toList());
+    }
+
+    public static void onTick() {
+        for (Module m : modules) if (m.isEnabled()) m.onTick();
+    }
+
+    public static void onKey(int key) {
+        for (Module m : modules) if (m.getKey() == key) m.toggle();
     }
 }
