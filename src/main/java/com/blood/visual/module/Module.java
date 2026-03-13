@@ -70,3 +70,8 @@ enum Category {
 }
 
 interface Setting {}
+
+// Remove Category enum from the class, it has been put inside the interface
+// public abstract class Module {
+//     // existing code...
+// }

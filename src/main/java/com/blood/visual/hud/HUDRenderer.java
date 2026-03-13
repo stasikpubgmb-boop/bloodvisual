@@ -8,6 +8,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
+
 public class HUDRenderer implements HudRenderCallback {
     private float hue = 0f;
     @Override public void onHudRender(DrawContext ctx, RenderTickCounter counter) {

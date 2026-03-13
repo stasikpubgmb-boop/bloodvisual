@@ -4,8 +4,8 @@ import com.blood.visual.module.Category;
 import com.blood.visual.module.Module;
 import com.blood.visual.module.ModuleManager;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.DrawContext;
 import net.minecraft.client.util.InputUtil;
@@ -98,11 +98,12 @@ class ModuleRow {
         this.module = module;
     }
 
-    public void render(DrawContext ctx, int mouseX, int mouseY) {
-        ctx.drawString(module.getName(), x, y);
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX > x && mouseX < x + 100 && mouseY > y && mouseY < y + 20;
     }
 
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= x && mouseX <= x + 100 && mouseY >= y && mouseY <= y + 20;
+    public void render(DrawContext ctx, int offsetX, int offsetY) {
+        ctx.fill(x + offsetX, y + offsetY, x + 100 + offsetX, y + 20 + offsetY, 0xCC0D0D0D);
+        ctx.drawStrings(module.getName(), x + 10 + offsetX, y + 5 + offsetY);
     }
 }

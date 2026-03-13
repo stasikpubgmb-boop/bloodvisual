@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class BloodVisual implements ClientModInitializer {
 
     public static ModuleManager moduleManager;
     public static KeyBinding clickGuiKeybind;
-    public static List<Module> modules = new ArrayList<>();
-    public static HUD hud;
+    public static List<com.blood.visual.module.Module> modules = new ArrayList<>();
+    public static com.blood.visual.hud.HUD hud;
 
     @Override
     public void onInitializeClient() {
@@ -36,10 +37,10 @@ public class BloodVisual implements ClientModInitializer {
         // ...
 
         // Register HUD
-        hud = new HUD();
+        hud = new com.blood.visual.hud.HUD();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            for (Module module : modules) {
+            for (com.blood.visual.module.Module module : modules) {
                 module.onTick();
             }
         });
