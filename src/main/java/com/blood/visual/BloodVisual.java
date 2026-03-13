@@ -6,52 +6,32 @@ import com.blood.visual.hud.TargetESP;
 import com.blood.visual.module.ModuleManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BloodVisual implements ClientModInitializer {
-
-    public static ModuleManager moduleManager;
-    public static KeyBinding clickGuiKeybind;
-    public static List<com.blood.visual.module.Module> modules = new ArrayList<>();
-    public static com.blood.visual.hud.HUD hud;
+    public static final String MOD_ID = "bloodvisual";
 
     @Override
     public void onInitializeClient() {
-        moduleManager = new ModuleManager();
-
-        clickGuiKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.bloodvisual.clickgui", // The translation key for the keybinding's name
-                InputUtil.Type.KEYBOARD, // The type of the keybinding, KEYBOARD or MOUSE
-                GLFW.GLFW_KEY_RIGHT_SHIFT, // The key code of the keybinding
-                "category.bloodvisual.clickgui" // The translation key for the keybinding's category
-        ));
-
-        // Initialize modules
-        // ...
-
-        // Register HUD
-        hud = new com.blood.visual.hud.HUD();
-
+        ModuleManager.init();
+        HudRenderCallback.EVENT.register(new HUDRenderer());
+        HudRenderCallback.EVENT.register(new TargetESP());
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            for (com.blood.visual.module.Module module : modules) {
-                module.onTick();
+            ModuleManager.onTick();
+            if (client.player != null && client.options.inventoryKey.wasPressed()) {
+                // reserved
             }
         });
-
-        // Register ClickGUI
-        ClickGUI clickGUI = new ClickGUI(null, moduleManager);
-
-        // Register HUD Renderers
-        HUDRenderer hudRenderer = new HUDRenderer();
-        TargetESP targetESP = new TargetESP(MinecraftClient.getInstance());
-        net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback.EVENT.register(targetESP); // Register the HudRenderCallback
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player == null) return;
+            if (GLFW.glfwGetKey(client.getWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS) {
+                if (client.currentScreen == null) {
+                    client.setScreen(new ClickGUI());
+                }
+            }
+            ModuleManager.onKey(0);
+        });
     }
 }

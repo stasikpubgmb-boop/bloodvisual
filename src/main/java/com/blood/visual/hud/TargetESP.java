@@ -1,74 +1,51 @@
 package com.blood.visual.hud;
 
-import com.blood.visual.module.Module;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.DrawContext;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Box;
 
 public class TargetESP implements HudRenderCallback {
-    private final MinecraftClient client;
-
-    public TargetESP(MinecraftClient client) {
-        this.client = client;
-    }
+    private float hue = 0f;
 
     @Override
     public void onHudRender(DrawContext ctx, RenderTickCounter counter) {
-        PlayerEntity player = client.player;
-        if (player == null) return;
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.player == null || mc.world == null) return;
 
-        Entity target = getClosestEntityInCrosshairDirection(player, 10);
-        if (target instanceof PlayerEntity) {
-            PlayerEntity targetPlayer = (PlayerEntity) target;
-            int health = (int) targetPlayer.getHealth();
-            int maxHealth = (int) targetPlayer.getMaxHealth();
-
-            int x = ctx.getWindow().getScaledWidth() / 2 - 50;
-            int y = ctx.getWindow().getScaledHeight() - 50;
-
-            ctx.fill(x, y, x + 100, y + 20, 0x88000000);
-            ctx.drawString(targetPlayer.getEntityName(), x + 5, y + 5);
-
-            // Health bar
-            int healthBarWidth = (int) ((health / (float) maxHealth) * 90);
-            ctx.fill(x + 5, y + 15, x + 5 + healthBarWidth, y + 20, getHealthColor(health, maxHealth));
+        PlayerEntity target = null;
+        double closest = 20.0;
+        for (PlayerEntity p : mc.world.getPlayers()) {
+            if (p == mc.player) continue;
+            double dist = mc.player.distanceTo(p);
+            if (dist < closest) { closest = dist; target = p; }
         }
-    }
+        if (target == null) return;
 
-    private Entity getClosestEntityInCrosshairDirection(PlayerEntity player, double maxDistance) {
-        Vec3d direction = player.getRotationVec(1.0f);
-        Vec3d closestEntity = null;
-        double closestDistance = Double.MAX_VALUE;
+        int sw = mc.getWindow().getScaledWidth();
+        int sh = mc.getWindow().getScaledHeight();
+        int bx = sw / 2 - 80, by = sh - 80, bw = 160, bh = 55;
 
-        for (Entity entity : player.world.getEntities()) {
-            if (entity instanceof PlayerEntity && entity != player) {
-                Vec3d entityDirection = entity.getPos().subtract(player.getPos());
-                double dotProduct = direction.dotProduct(entityDirection.normalize());
-                double distance = entityDirection.length();
+        hue += 0.01f; if (hue > 1f) hue = 0f;
+        int borderColor = java.awt.Color.HSBtoRGB(hue, 0.8f, 1f);
 
-                if (distance <= maxDistance && dotProduct > 0.5) {
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        closestEntity = entity;
-                    }
-                }
-            }
-        }
+        ctx.fill(bx, by, bx + bw, by + bh, 0xCC0a0a0a);
+        ctx.fill(bx, by, bx + bw, by + 1, borderColor);
+        ctx.fill(bx, by + bh - 1, bx + bw, by + bh, borderColor);
+        ctx.fill(bx, by, bx + 1, by + bh, borderColor);
+        ctx.fill(bx + bw - 1, by, bx + bw, by + bh, borderColor);
 
-        return closestEntity;
-    }
+        ctx.drawTextWithShadow(mc.textRenderer, target.getName().getString(), bx + 5, by + 5, 0xFFFFFFFF);
 
-    private int getHealthColor(int health, int maxHealth) {
-        if (health >= maxHealth * 0.7) {
-            return 0x33CC33;
-        } else if (health >= maxHealth * 0.4) {
-            return 0xFFFF66;
-        } else {
-            return 0xFF3333;
-        }
+        float hp = target.getHealth();
+        float maxHp = target.getMaxHealth();
+        float hpPct = hp / maxHp;
+        int hpColor = hpPct > 0.6f ? 0xFF00FF44 : hpPct > 0.3f ? 0xFFFFAA00 : 0xFFFF3333;
+        ctx.fill(bx + 5, by + 18, bx + bw - 5, by + 26, 0xFF333333);
+        ctx.fill(bx + 5, by + 18, bx + 5 + (int)((bw - 10) * hpPct), by + 26, hpColor);
+        ctx.drawTextWithShadow(mc.textRenderer, "HP: " + (int)hp + "/" + (int)maxHp, bx + 5, by + 29, 0xFFCCCCCC);
+        ctx.drawTextWithShadow(mc.textRenderer, "Dist: " + (int)closest + "m", bx + 5, by + 40, 0xFF888888);
     }
 }
