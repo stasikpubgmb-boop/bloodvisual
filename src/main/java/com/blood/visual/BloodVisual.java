@@ -51,5 +51,7 @@ public class BloodVisual implements ClientModInitializer {
         // Register HUD Renderers
         HUDRenderer hudRenderer = new HUDRenderer();
         TargetESP targetESP = new TargetESP(MinecraftClient.getInstance());
+        HudRenderCallback.EVENT.register(targetESP); // Register the HudRenderCallback
     }
 }
+

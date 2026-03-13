@@ -6,7 +6,6 @@ import net.minecraft.client.render.DrawContext;
 import net.minecraft.client.util.math.MathHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
-
 import java.awt.Color;
 
 public class TargetESP extends Module {
@@ -14,14 +13,14 @@ public class TargetESP extends Module {
     private PlayerEntity currentTarget;
 
     public TargetESP() {
-        super("TargetESP", Category.VISUAL);
+        super("TargetESP", Module.Category.VISUAL);
     }
 
     @Override
     public void onTick() {
         currentTarget = null;
         double distance = Double.MAX_VALUE;
-        for (PlayerEntity player : MinecraftClient.getInstance().world.getEntitiesByType(PlayerEntity.class, (entity) -> entity != MinecraftClient.getInstance().player)) {
+        for (PlayerEntity player : MinecraftClient.getInstance().world.getEntitiesByType(PlayerEntity.class, entity -> entity != MinecraftClient.getInstance().player)) {
             if (player.getPos().distanceTo(MinecraftClient.getInstance().player.getPos()) <= 20) {
                 double playerDistance = player.getPos().distanceTo(MinecraftClient.getInstance().player.getPos());
                 if (playerDistance < distance) {
@@ -68,3 +67,4 @@ public class TargetESP extends Module {
         ctx.fill(x + 5, y + height / 2 - 5, x + 5 + (int) (healthBarWidth * health), y + height / 2 + 5, healthColor);
     }
 }
+
