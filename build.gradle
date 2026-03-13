@@ -35,5 +35,9 @@ jar {
         include '**/*'
         exclude 'META-INF/**'
     }
-    archiveName = 'BloodVisual-${version}.jar'
+    archiveName = "BloodVisual-${version}.jar"
+}
+
+base {
+    archivesName = "BloodVisual-${version}"
 }
