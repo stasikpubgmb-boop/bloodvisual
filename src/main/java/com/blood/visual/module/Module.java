@@ -5,12 +5,12 @@ import java.util.List;
 
 public abstract class Module {
     private String name;
-    private Category category;
+    private com.blood.visual.module.Category category;
     private boolean enabled;
     private List<Setting> settings;
     private int key = -1;
 
-    public Module(String name, Category category) {
+    public Module(String name, com.blood.visual.module.Category category) {
         this.name = name;
         this.category = category;
         this.settings = new ArrayList<>();
@@ -28,7 +28,7 @@ public abstract class Module {
         return this.name;
     }
 
-    public Category getCategory() {
+    public com.blood.visual.module.Category getCategory() {
         return this.category;
     }
 
@@ -63,7 +63,10 @@ public abstract class Module {
     public void onTick() {}
 }
 
-enum Category {
+// src/main/java/com/blood/visual/Category.java
+package com.blood.visual;
+
+public enum Category {
     COMBAT,
     MOVEMENT,
     VISUAL
@@ -71,7 +74,3 @@ enum Category {
 
 interface Setting {}
 
-// Remove Category enum from the class, it has been put inside the interface
-// public abstract class Module {
-//     // existing code...
-// }

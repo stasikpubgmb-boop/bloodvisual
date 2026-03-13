@@ -49,7 +49,7 @@ public class BloodVisual implements ClientModInitializer {
         ClickGUI clickGUI = new ClickGUI(null, moduleManager);
 
         // Register HUD Renderers
-        HUDRenderer hudRenderer = new HUDRenderer(moduleManager);
+        HUDRenderer hudRenderer = new HUDRenderer();
         TargetESP targetESP = new TargetESP(MinecraftClient.getInstance());
     }
 }

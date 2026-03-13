@@ -1,6 +1,7 @@
 package com.blood.visual.hud;
 import com.blood.visual.module.Module;
 import com.blood.visual.module.ModuleManager;
+import com.blood.visual.BloodVisual;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -14,7 +15,7 @@ public class HUDRenderer implements HudRenderCallback {
     @Override public void onHudRender(DrawContext ctx, RenderTickCounter counter) {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null || mc.currentScreen != null) return;
-        List<Module> enabled = ModuleManager.getModules().stream()
+        List<Module> enabled = BloodVisual.moduleManager.getModules().stream()
             .filter(Module::isEnabled)
             .sorted(Comparator.comparingInt(m -> -mc.textRenderer.getWidth(m.getName())))
             .toList();

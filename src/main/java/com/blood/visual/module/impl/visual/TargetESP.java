@@ -14,15 +14,15 @@ public class TargetESP extends Module {
     private PlayerEntity currentTarget;
 
     public TargetESP() {
-        super("TargetESP", Module.Category.VISUAL);
+        super("TargetESP", com.blood.visual.Category.VISUAL);
     }
 
     @Override
     public void onTick() {
         currentTarget = null;
         double distance = Double.MAX_VALUE;
-        for (PlayerEntity player : MinecraftClient.getInstance().world.getEntitiesByType(PlayerEntity.class)) {
-            if (player != MinecraftClient.getInstance().player && player.getPos().distanceTo(MinecraftClient.getInstance().player.getPos()) <= 20) {
+        for (PlayerEntity player : MinecraftClient.getInstance().world.getEntitiesByType(PlayerEntity.class, (entity) -> entity != MinecraftClient.getInstance().player)) {
+            if (player.getPos().distanceTo(MinecraftClient.getInstance().player.getPos()) <= 20) {
                 double playerDistance = player.getPos().distanceTo(MinecraftClient.getInstance().player.getPos());
                 if (playerDistance < distance) {
                     distance = playerDistance;
