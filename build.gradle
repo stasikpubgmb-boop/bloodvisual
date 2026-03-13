@@ -1,31 +1,30 @@
 plugins {
     id 'fabric-loom' version '1.10.1'
+    id 'maven-publish'
 }
 
-group 'com.blood.visual'
-version '1.0.0'
+version = '1.0.0'
+group = 'com.blood.visual'
 
-archiving {
-    archivesBaseName = "bloodvisual"
+base {
+    archivesName = 'bloodvisual'
 }
 
 repositories {
     maven { url 'https://maven.fabricmc.net/' }
-    maven { url 'https://maven.minecraft.net/' }
-    mavenCentral()
     maven { url 'https://libraries.minecraft.net/' }
-    maven { url 'https://repo.essentialsx.net/' }
-    maven { url 'https://repo.gradle.org/gradle/repo' }
+    mavenCentral()
     google()
 }
 
 dependencies {
     minecraft 'com.mojang:minecraft:1.21.4'
-    modImplementation 'net.fabricmc:yarn:1.21.4+build.8:v2'
+    mappings 'net.fabricmc:yarn:1.21.4+build.8:v2'
     modImplementation 'net.fabricmc:fabric-loader:0.16.9'
     modImplementation 'net.fabricmc.fabric-api:fabric-api:0.110.0+1.21.4'
-    modImplementation include('net.fabricmc:fabric-loader:0.16.9')
 }
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
