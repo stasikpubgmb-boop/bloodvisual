@@ -10,6 +10,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
+
 public class BloodVisual implements ClientModInitializer {
     public static final String MOD_ID = "bloodvisual";
     public static ModuleManager moduleManager;

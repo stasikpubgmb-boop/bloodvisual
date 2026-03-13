@@ -13,12 +13,12 @@ public class Fullbright extends Module {
     @Override
     public void onEnable() {
         GameOptions options = MinecraftClient.getInstance().options;
-        options.gamma = (float) 10.0D; // Cast to float
+        options.setGamma(10.0);
     }
 
     @Override
     public void onDisable() {
         GameOptions options = MinecraftClient.getInstance().options;
-        options.gamma = (float) 1.0D; // Cast to float
+        options.setGamma(1.0);
     }
 }
