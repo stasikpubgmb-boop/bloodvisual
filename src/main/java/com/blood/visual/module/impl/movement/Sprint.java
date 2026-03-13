@@ -1,6 +1,7 @@
 package com.blood.visual.module.impl.movement;
 
 import com.blood.visual.module.Module;
+import net.minecraft.client.MinecraftClient;
 
 public class Sprint extends Module {
 

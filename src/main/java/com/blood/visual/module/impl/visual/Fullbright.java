@@ -2,6 +2,7 @@ package com.blood.visual.module.impl.visual;
 
 import com.blood.visual.module.Module;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.MinecraftClient;
 
 public class Fullbright extends Module {
 
@@ -14,11 +15,11 @@ public class Fullbright extends Module {
     @Override
     public void onEnable() {
         options = MinecraftClient.getInstance().options;
-        options.getGamma().setValue(10.0);
+        options.gamma = 10.0f;
     }
 
     @Override
     public void onDisable() {
-        options.getGamma().setValue(1.0);
+        options.gamma = 1.0f;
     }
 }

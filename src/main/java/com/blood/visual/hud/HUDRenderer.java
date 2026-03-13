@@ -15,10 +15,7 @@ public class HUDRenderer implements HudRenderCallback {
     @Override public void onHudRender(DrawContext ctx, RenderTickCounter counter) {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null || mc.currentScreen != null) return;
-        List<Module> enabled = BloodVisual.moduleManager.getModules().stream()
-            .filter(Module::isEnabled)
-            .sorted(Comparator.comparingInt(m -> -mc.textRenderer.getWidth(m.getName())))
-            .toList();
+        List<Module> enabled = BloodVisual.moduleManager.getModulesByIsEnabled();
         int sw = mc.getWindow().getScaledWidth();
         int y = 2;
         hue += 0.005f; if (hue > 1f) hue = 0f;

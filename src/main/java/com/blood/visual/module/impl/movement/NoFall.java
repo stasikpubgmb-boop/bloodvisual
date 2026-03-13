@@ -1,7 +1,7 @@
 package com.blood.visual.module.impl.movement;
 
 import com.blood.visual.module.Module;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.MinecraftClient;
 
 public class NoFall extends Module {
 

@@ -12,14 +12,16 @@ import org.lwjgl.glfw.GLFW;
 
 public class BloodVisual implements ClientModInitializer {
     public static final String MOD_ID = "bloodvisual";
+    public static ModuleManager moduleManager;
 
     @Override
     public void onInitializeClient() {
-        ModuleManager.init();
+        moduleManager = new ModuleManager();
+        moduleManager.init();
         HudRenderCallback.EVENT.register(new HUDRenderer());
         HudRenderCallback.EVENT.register(new TargetESP());
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            ModuleManager.onTick();
+            moduleManager.onTick();
             if (client.player != null && client.options.inventoryKey.wasPressed()) {
                 // reserved
             }
@@ -31,7 +33,7 @@ public class BloodVisual implements ClientModInitializer {
                     client.setScreen(new ClickGUI());
                 }
             }
-            ModuleManager.onKey(0);
+            moduleManager.onKey(0);
         });
     }
 }
