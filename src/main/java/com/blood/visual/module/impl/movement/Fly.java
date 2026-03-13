@@ -2,6 +2,7 @@ package com.blood.visual.module.impl.movement;
 
 import com.blood.visual.module.Module;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class Fly extends Module {
 
@@ -11,18 +12,21 @@ public class Fly extends Module {
 
     @Override
     public void onEnable() {
-        MinecraftClient.getInstance().player.abilities.allowFlying = true;
-        MinecraftClient.getInstance().player.abilities.flying = true;
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        player.abilities.flying = true; // Access abilities through player
+        player.abilities.allowFlying = true; // Access abilities through player
     }
 
     @Override
     public void onDisable() {
-        MinecraftClient.getInstance().player.abilities.allowFlying = false;
-        MinecraftClient.getInstance().player.abilities.flying = false;
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        player.abilities.flying = false; // Access abilities through player
+        player.abilities.allowFlying = false; // Access abilities through player
     }
 
     @Override
     public void onTick() {
-        MinecraftClient.getInstance().player.abilities.flying = true;
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        player.abilities.flying = true; // Access abilities through player
     }
 }
