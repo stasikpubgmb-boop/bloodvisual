@@ -1,7 +1,7 @@
 package com.blood.visual.module.impl.visual;
 
 import com.blood.visual.module.Module;
-import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.MinecraftClient;
 
 public class Fullbright extends Module {
