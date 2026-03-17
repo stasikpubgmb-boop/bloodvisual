@@ -1,9 +1,0 @@
-{
-  "id": "bloodvisual",
-  "version": "1.0.0",
-  "name": "BloodVisual",
-  "description": "",
-  "entrypoints": {
-    "client": ["com.blood.visual.BloodVisual"]
-  }
-}
