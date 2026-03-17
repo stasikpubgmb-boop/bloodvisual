@@ -52,145 +52,48 @@ jobs:
           
           task = """${{ github.event.issue.body }}"""
           
-          prompt = f"""
-          ТЫ - Veron, создатель модов. Делаешь BloodVisual для Minecraft 1.21.4 Fabric.
+          # РАЗБИВАЕМ ПРОМПТ НА ЧАСТИ ЧТОБЫ ИЗБЕЖАТЬ ОШИБКИ
+          prompt_parts = [
+              "Ты - Veron, создатель модов. Делаешь BloodVisual для Minecraft 1.21.4 Fabric.",
+              "Задание: " + task,
+              "Создай полностью все Java классы и ресурсы как описано.",
+              "com/veron/bloodvisual/BloodVisual.java - главный класс",
+              "com/veron/bloodvisual/BloodVisualClient.java - клиент",
+              "com/veron/bloodvisual/client/BloodOverlay.java - HUD с кровью",
+              "com/veron/bloodvisual/client/BloodParticles.java - партиклы",
+              "com/veron/bloodvisual/client/BloodEffects.java - эффекты",
+              "com/veron/bloodvisual/client/Keybinds.java - клавиша V",
+              "com/veron/bloodvisual/ui/BloodMenu.java - меню",
+              "com/veron/bloodvisual/ui/BloodButton.java - кнопки",
+              "com/veron/bloodvisual/ui/BloodSlider.java - слайдеры",
+              "com/veron/bloodvisual/ui/ColorPicker.java - выбор цвета",
+              "com/veron/bloodvisual/config/BloodConfig.java - конфиг",
+              "com/veron/bloodvisual/config/ConfigScreen.java - экран настроек",
+              "com/veron/bloodvisual/registry/ModItems.java - предметы",
+              "com/veron/bloodvisual/registry/ModParticles.java - регистрация частиц",
+              "com/veron/bloodvisual/registry/ModSounds.java - звуки",
+              "com/veron/bloodvisual/registry/ModScreens.java - экраны",
+              "com/veron/bloodvisual/utils/RenderHelper.java - рендер хелпер",
+              "com/veron/bloodvisual/utils/ColorUtils.java - цвета",
+              "com/veron/bloodvisual/utils/MathUtils.java - математика",
+              "",
+              "fabric.mod.json с правильными зависимостями",
+              "Текстуры через base64: button.png, panel.png, slider.png, blood_overlay.png, vignette.png, blood_particle.png",
+              "Звуки: heart_beat.ogg, blood_splat.ogg",
+              "Локализация en_us.json и ru_ru.json",
+              "",
+              "ВАЖНО: Код должен выглядеть как писал Veron:",
+              "- Не идеальные отступы",
+              "- Иногда пропущенные строки", 
+              "- Комментарии только в сложных местах",
+              "- TODO: оставить пару штук",
+              "- Реалистичные имена переменных",
+              "",
+              "Напиши Python код, который создаст ВСЕ эти файлы.",
+              "Используй base64 для текстур."
+          ]
           
-          Задание: {task}
-          
-          СОЗДАЙ ПОЛНОСТЬЮ:
-          
-          1. ВСЕ JAVA КЛАССЫ:
-          
-          com/veron/bloodvisual/BloodVisual.java:
-          - Главный класс мода
-          - Инициализация
-          - Регистрация всего
-          
-          com/veron/bloodvisual/BloodVisualClient.java:
-          - Клиентская часть
-          - Рендер HUD
-          - Партиклы
-          
-          com/veron/bloodvisual/client/BloodOverlay.java:
-          - HUD с кровью на краях экрана
-          - Эффект при низком здоровье
-          
-          com/veron/bloodvisual/client/BloodParticles.java:
-          - Кровавые партиклы
-          - Спавн при ударах
-          
-          com/veron/bloodvisual/client/BloodEffects.java:
-          - Пост-эффекты
-          - Затухание крови
-          
-          com/veron/bloodvisual/client/Keybinds.java:
-          - Клавиша V для меню
-          
-          com/veron/bloodvisual/ui/BloodMenu.java:
-          - Главное меню мода
-          
-          com/veron/bloodvisual/ui/BloodButton.java:
-          - Кастомные кнопки
-          
-          com/veron/bloodvisual/ui/BloodSlider.java:
-          - Слайдеры настроек
-          
-          com/veron/bloodvisual/ui/ColorPicker.java:
-          - Выбор цвета крови
-          
-          com/veron/bloodvisual/config/BloodConfig.java:
-          - Конфиг с настройками
-          
-          com/veron/bloodvisual/config/ConfigScreen.java:
-          - Экран настроек
-          
-          com/veron/bloodvisual/registry/ModItems.java:
-          - Регистрация предметов
-          
-          com/veron/bloodvisual/registry/ModParticles.java:
-          - Регистрация партиклов
-          
-          com/veron/bloodvisual/registry/ModSounds.java:
-          - Регистрация звуков
-          
-          com/veron/bloodvisual/registry/ModScreens.java:
-          - Регистрация экранов
-          
-          com/veron/bloodvisual/utils/RenderHelper.java:
-          - Хелперы для рендера
-          
-          com/veron/bloodvisual/utils/ColorUtils.java:
-          - Работа с цветом
-          
-          com/veron/bloodvisual/utils/MathUtils.java:
-          - Математика для эффектов
-          
-          2. fabric.mod.json:
-          {{
-            "schemaVersion": 1,
-            "id": "bloodvisual",
-            "version": "1.0.0",
-            "name": "BloodVisual",
-            "description": "Визуальные эффекты крови от Veron",
-            "authors": ["Veron"],
-            "contact": {{}},
-            "license": "All Rights Reserved",
-            "icon": "assets/bloodvisual/icon.png",
-            "environment": "*",
-            "entrypoints": {{
-              "main": ["com.veron.bloodvisual.BloodVisual"],
-              "client": ["com.veron.bloodvisual.BloodVisualClient"],
-              "modmenu": ["com.veron.bloodvisual.config.ConfigScreen"]
-            }},
-            "depends": {{
-              "fabricloader": ">=0.15.0",
-              "minecraft": "1.21.4",
-              "java": ">=21",
-              "fabric-api": "*"
-            }}
-          }}
-          
-          3. ТЕКСТУРЫ (base64):
-          - assets/bloodvisual/textures/ui/button.png
-          - assets/bloodvisual/textures/ui/panel.png
-          - assets/bloodvisual/textures/ui/slider.png
-          - assets/bloodvisual/textures/hud/blood_overlay.png
-          - assets/bloodvisual/textures/hud/vignette.png
-          - assets/bloodvisual/textures/particles/blood_particle.png
-          
-          4. ЗВУКИ:
-          - assets/bloodvisual/sounds/heart_beat.ogg (описание)
-          - assets/bloodvisual/sounds/blood_splat.ogg (описание)
-          
-          5. ЛОКАЛИЗАЦИЯ:
-          assets/bloodvisual/lang/en_us.json:
-          {{
-            "key.bloodvisual.open_menu": "Open BloodVisual Menu",
-            "gui.bloodvisual.title": "BloodVisual Settings",
-            "gui.bloodvisual.intensity": "Blood Intensity",
-            "gui.bloodvisual.sounds": "Heartbeat Sounds",
-            "gui.bloodvisual.color": "Blood Color"
-          }}
-          
-          assets/bloodvisual/lang/ru_ru.json:
-          {{
-            "key.bloodvisual.open_menu": "Открыть меню BloodVisual",
-            "gui.bloodvisual.title": "Настройки BloodVisual",
-            "gui.bloodvisual.intensity": "Интенсивность крови",
-            "gui.bloodvisual.sounds": "Звуки сердцебиения",
-            "gui.bloodvisual.color": "Цвет крови"
-          }}
-          
-          ВАЖНО: Код должен выглядеть как писал Veron:
-          - Не идеальные отступы
-          - Иногда пропущенные строки
-          - Комментарии только в сложных местах
-          - TODO: оставить пару штук
-          - Реалистичные имена переменных
-          
-          Напиши Python код, который создаст ВСЕ эти файлы.
-          Используй base64 для текстур.
-          EOF
+          prompt = "\n".join(prompt_parts)
           
           response = model.generate_content(prompt)
           
