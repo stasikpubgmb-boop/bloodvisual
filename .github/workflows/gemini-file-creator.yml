@@ -1,127 +1,250 @@
-name: 🚀 UNIVERSAL AI CONSTRUCTOR v3.0 - BLOODVISUAL
+name: 🤖 УНИВЕРСАЛЬНЫЙ AI ИСПОЛНИТЕЛЬ v4.0
 
 on:
   issues:
     types: [opened, edited]
   issue_comment:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Задача для AI'
+        required: true
+        default: 'Создать структуру мода'
 
 jobs:
-  bloodvisual-creator:
+  universal-executor:
     if: |
       (github.event_name == 'issues' && contains(github.event.issue.body, '@create')) ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@create'))
+      (github.event_name == 'issues' && contains(github.event.issue.body, '@make')) ||
+      (github.event_name == 'issues' && contains(github.event.issue.body, '@build')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@create')) ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
       issues: write
       pull-requests: write
+      actions: write
     
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: 📦 Install deps
+      - name: 🔧 Установка всего необходимого
         run: |
+          # Java для Minecraft/Android
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jdk gradle maven
+          
+          # Python и библиотеки
           pip install --upgrade pip
-          pip install google-generativeai pillow numpy
+          pip install google-generativeai pillow numpy pygame requests beautifulsoup4 pyyaml
+          
+          # Node.js для веб-проектов
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          
+          # Lua для Poppy/GMod
+          sudo apt-get install -y lua5.4
+          
+          # Инструменты
+          sudo apt-get install -y imagemagick ffmpeg git
 
-      - name: 🧠 Generate BloodVisual Mod
+      - name: 🧠 ЗАПУСК AI (делает ВСЁ)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python - <<'EOF'
           import os
+          import sys
+          import json
           import base64
           import google.generativeai as genai
           from datetime import datetime
+          import subprocess
           
+          # Настройка Gemini
           genai.configure(api_key=os.environ['GEMINI_API_KEY'])
           model = genai.GenerativeModel('gemini-2.0-flash-exp')
           
-          task = """${{ github.event.issue.body }}"""
+          # Получаем задачу
+          task = """
+          ${{ github.event.issue.body || github.event.comment.body || github.event.inputs.task }}
+          """
           
-          # РАЗБИВАЕМ ПРОМПТ НА ЧАСТИ ЧТОБЫ ИЗБЕЖАТЬ ОШИБКИ
-          prompt_parts = [
-              "Ты - Veron, создатель модов. Делаешь BloodVisual для Minecraft 1.21.4 Fabric.",
-              "Задание: " + task,
-              "Создай полностью все Java классы и ресурсы как описано.",
-              "com/veron/bloodvisual/BloodVisual.java - главный класс",
-              "com/veron/bloodvisual/BloodVisualClient.java - клиент",
-              "com/veron/bloodvisual/client/BloodOverlay.java - HUD с кровью",
-              "com/veron/bloodvisual/client/BloodParticles.java - партиклы",
-              "com/veron/bloodvisual/client/BloodEffects.java - эффекты",
-              "com/veron/bloodvisual/client/Keybinds.java - клавиша V",
-              "com/veron/bloodvisual/ui/BloodMenu.java - меню",
-              "com/veron/bloodvisual/ui/BloodButton.java - кнопки",
-              "com/veron/bloodvisual/ui/BloodSlider.java - слайдеры",
-              "com/veron/bloodvisual/ui/ColorPicker.java - выбор цвета",
-              "com/veron/bloodvisual/config/BloodConfig.java - конфиг",
-              "com/veron/bloodvisual/config/ConfigScreen.java - экран настроек",
-              "com/veron/bloodvisual/registry/ModItems.java - предметы",
-              "com/veron/bloodvisual/registry/ModParticles.java - регистрация частиц",
-              "com/veron/bloodvisual/registry/ModSounds.java - звуки",
-              "com/veron/bloodvisual/registry/ModScreens.java - экраны",
-              "com/veron/bloodvisual/utils/RenderHelper.java - рендер хелпер",
-              "com/veron/bloodvisual/utils/ColorUtils.java - цвета",
-              "com/veron/bloodvisual/utils/MathUtils.java - математика",
-              "",
-              "fabric.mod.json с правильными зависимостями",
-              "Текстуры через base64: button.png, panel.png, slider.png, blood_overlay.png, vignette.png, blood_particle.png",
-              "Звуки: heart_beat.ogg, blood_splat.ogg",
-              "Локализация en_us.json и ru_ru.json",
-              "",
-              "ВАЖНО: Код должен выглядеть как писал Veron:",
-              "- Не идеальные отступы",
-              "- Иногда пропущенные строки", 
-              "- Комментарии только в сложных местах",
-              "- TODO: оставить пару штук",
-              "- Реалистичные имена переменных",
-              "",
-              "Напиши Python код, который создаст ВСЕ эти файлы.",
-              "Используй base64 для текстур."
-          ]
+          print("🔮 Анализирую задачу...")
+          print(f"📝 Задача: {task[:200]}...")
           
-          prompt = "\n".join(prompt_parts)
+          # УНИВЕРСАЛЬНЫЙ ПРОМПТ - ДЕЛАЕТ ВСЁ ЧТО УГОДНО
+          prompt = f"""
+          ТЫ - АБСОЛЮТНЫЙ УНИВЕРСАЛЬНЫЙ СОЗДАТЕЛЬ. Делаешь ЛЮБЫЕ файлы и проекты.
           
+          ЗАДАНИЕ ПОЛЬЗОВАТЕЛЯ:
+          {task}
+          
+          ТЫ МОЖЕШЬ СОЗДАВАТЬ:
+          
+          1️⃣ МОДЫ ДЛЯ ИГР:
+          - Poppy Playtime (Lua структура, текстуры, HUD, GUI)
+          - Minecraft (Java, Fabric/Forge, 1.21.4, 1.19.2, любой)
+          - Garry's Mod (Lua, аддоны, оружие, карты)
+          - Stardew Valley (C#)
+          - Skyrim (Papyrus)
+          - Любые другие игры
+          
+          2️⃣ ПРОГРАММЫ И СКРИПТЫ:
+          - Python (боты, игры, GUI, веб-скраперы)
+          - Java (приложения, Android)
+          - JavaScript/TypeScript (сайты, игры, боты)
+          - C# (Unity, десктоп)
+          - C++ (игры, софт)
+          - Go, Rust, Ruby, PHP - любые языки
+          
+          3️⃣ ВЕБ-ПРОЕКТЫ:
+          - Сайты (HTML/CSS/JS)
+          - React/Vue/Angular приложения
+          - Telegram/Discord боты
+          - API сервера
+          - Базы данных (SQL, MongoDB)
+          
+          4️⃣ ГРАФИКА И АССЕТЫ:
+          - Текстуры (PNG через base64)
+          - 3D модели (OBJ описания)
+          - Звуки (описания)
+          - Шейдеры
+          - UI/UX дизайн
+          
+          5️⃣ БАЗЫ ДАННЫХ И СТРУКТУРЫ:
+          - SQL скрипты
+          - JSON конфиги
+          - XML/YAML файлы
+          - Любые структуры папок
+          
+          6️⃣ ДОКУМЕНТАЦИЯ:
+          - README.md
+          - Инструкции
+          - Wiki
+          - Комментарии к коду
+          
+          АЛГОРИТМ РАБОТЫ:
+          1. Пойми ЧТО ИМЕННО нужно создать из задачи
+          2. Определи тип проекта (мод/программа/сайт/бот)
+          3. Создай ПОЛНУЮ структуру папок под этот тип
+          4. Напиши ВЕСЬ код для всех файлов
+          5. Добавь текстуры/звуки если нужно (base64)
+          6. Создай конфиги и зависимости
+          7. Добавь README с инструкцией
+          
+          ПРИМЕРЫ:
+          
+          Если просят Poppy мод:
+          - /Mods/Название/ModMain.lua
+          - /Mods/Название/Content/Textures/
+          - /Mods/Название/Content/GUI/
+          - HUD.lua с хп баром
+          - GUI меню с кнопками
+          
+          Если просят Minecraft мод:
+          - src/main/java/com/mod/
+          - src/main/resources/
+          - fabric.mod.json
+          - build.gradle
+          - Классы с регистрацией
+          
+          Если просят сайт:
+          - index.html
+          - style.css
+          - script.js
+          - assets/images/
+          
+          Если просят бота:
+          - bot.py / index.js
+          - config.json
+          - requirements.txt / package.json
+          
+          Если просят базу данных:
+          - schema.sql
+          - seeds.sql
+          - migrations/
+          
+          ВАЖНЫЕ ПРАВИЛА:
+          1. Код должен выглядеть как написанный человеком
+          2. Не идеальные отступы
+          3. Иногда пропущенные строки
+          4. Комментарии только в сложных местах
+          5. TODO оставь парочку
+          6. Реалистичные имена переменных
+          
+          ОТВЕТ ДАЙ ТОЛЬКО PYTHON КОДОМ, который создаст все файлы.
+          Используй os.makedirs() и open() для создания.
+          Для текстур используй base64.b64decode().
+          """
+          
+          print("🎨 Генерирую решение...")
           response = model.generate_content(prompt)
           
-          # Сохраняем код генератора
+          # Сохраняем код
           with open('generator.py', 'w') as f:
               f.write(response.text)
           
-          # Запускаем создание файлов
+          # Запускаем создание
+          print("⚙️ Создаю файлы...")
           exec(response.text)
           
-          print("✅ BloodVisual mod created by Veron!")
+          # Создаём отчёт
+          files_created = []
+          for root, dirs, files in os.walk('.'):
+              for file in files:
+                  if not file.startswith('.'):
+                      files_created.append(os.path.join(root, file))
+          
+          report = {
+              'task': task[:100],
+              'files_created': len(files_created),
+              'created_at': str(datetime.now()),
+              'files': files_created[:50]
+          }
+          
+          with open('report.json', 'w') as f:
+              json.dump(report, f, indent=2)
+          
+          print(f"✅ Готово! Создано {len(files_created)} файлов")
           EOF
 
-      - name: 📦 Commit & Push
+      - name: 📦 Коммит и пуш
         run: |
-          git config --global user.name 'Veron'
-          git config --global user.email 'veron@bloodvisual.ru'
+          git config --global user.name 'Universal AI'
+          git config --global user.email 'ai@creator.space'
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "🎮 BloodVisual mod by Veron - 1.21.4 Fabric"
+          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 AI создал проект: $(date +%Y-%m-%d)"
           git push
 
-      - name: 💬 Comment
+      - name: 💬 Комментарий в Issue
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '✅ **BloodVisual mod готов!**\n\nВерсия: 1.21.4 Fabric\nАвтор: Veron\n\n📁 Все файлы в репозитории\n🎮 Клавиша V - меню\n🩸 Эффекты крови работают'
-            })
+            const fs = require('fs');
+            let report = { files_created: 0, task: 'неизвестно' };
+            if (fs.existsSync('report.json')) {
+              report = JSON.parse(fs.readFileSync('report.json'));
+            }
+            
+            let comment = `# ✅ **AI ВЫПОЛНИЛ ЗАДАЧУ!**\n\n`;
+            comment += `📝 **Задача:** ${report.task}\n`;
+            comment += `📁 **Создано файлов:** ${report.files_created}\n\n`;
+            comment += `🔍 **Что дальше:**\n`;
+            comment += `1. Зайди во вкладку **Code**\n`;
+            comment += `2. Найди созданные файлы\n`;
+            comment += `3. Используй по назначению\n\n`;
+            comment += `---\n`;
+            comment += `*Можешь создать новый Issue с @create и новой задачей*`;
+            
+            if (context.payload.issue || context.payload.comment) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
