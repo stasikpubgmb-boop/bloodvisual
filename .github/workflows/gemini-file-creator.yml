@@ -1,250 +1,210 @@
-name: 🤖 УНИВЕРСАЛЬНЫЙ AI ИСПОЛНИТЕЛЬ v4.0
+name: 🩸 BLOODVISUAL MOD MAKER
 
 on:
   issues:
-    types: [opened, edited]
+    types: [opened]
   issue_comment:
     types: [created]
-  workflow_dispatch:
-    inputs:
-      task:
-        description: 'Задача для AI'
-        required: true
-        default: 'Создать структуру мода'
 
 jobs:
-  universal-executor:
-    if: |
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@create')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@make')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@build')) ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@create')) ||
-      github.event_name == 'workflow_dispatch'
+  bloodvisual-only:
+    if: contains(github.event.issue.body, '@create') || contains(github.event.comment.body, '@create')
     runs-on: ubuntu-latest
     permissions:
       contents: write
       issues: write
-      pull-requests: write
-      actions: write
     
     steps:
-      - name: 📥 Checkout
+      - name: 📥 Клонируем
         uses: actions/checkout@v4
 
-      - name: 🔧 Установка всего необходимого
-        run: |
-          # Java для Minecraft/Android
-          sudo apt-get update
-          sudo apt-get install -y openjdk-17-jdk gradle maven
-          
-          # Python и библиотеки
-          pip install --upgrade pip
-          pip install google-generativeai pillow numpy pygame requests beautifulsoup4 pyyaml
-          
-          # Node.js для веб-проектов
-          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          
-          # Lua для Poppy/GMod
-          sudo apt-get install -y lua5.4
-          
-          # Инструменты
-          sudo apt-get install -y imagemagick ffmpeg git
+      - name: ☕ Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
 
-      - name: 🧠 ЗАПУСК AI (делает ВСЁ)
+      - name: 🐍 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Gemini
+        run: pip install google-generativeai
+
+      - name: 🧠 BloodVisual Генератор
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python - <<'EOF'
           import os
-          import sys
-          import json
           import base64
           import google.generativeai as genai
-          from datetime import datetime
-          import subprocess
           
-          # Настройка Gemini
           genai.configure(api_key=os.environ['GEMINI_API_KEY'])
-          model = genai.GenerativeModel('gemini-2.0-flash-exp')
+          model = genai.GenerativeModel('models/gemini-1.5-flash')
           
-          # Получаем задачу
-          task = """
-          ${{ github.event.issue.body || github.event.comment.body || github.event.inputs.task }}
-          """
+          # Получаем задачу от пользователя
+          task = """${{ github.event.issue.body }}"""
           
-          print("🔮 Анализирую задачу...")
-          print(f"📝 Задача: {task[:200]}...")
-          
-          # УНИВЕРСАЛЬНЫЙ ПРОМПТ - ДЕЛАЕТ ВСЁ ЧТО УГОДНО
           prompt = f"""
-          ТЫ - АБСОЛЮТНЫЙ УНИВЕРСАЛЬНЫЙ СОЗДАТЕЛЬ. Делаешь ЛЮБЫЕ файлы и проекты.
+          ТЫ - Veron. Делаешь ТОЛЬКО BloodVisual мод для Minecraft 1.21.4 Fabric.
+          НИЧЕГО ДРУГОГО НЕ ДЕЛАЙ. ТОЛЬКО НАШ МОД.
           
-          ЗАДАНИЕ ПОЛЬЗОВАТЕЛЯ:
-          {task}
+          Задача пользователя: {task}
           
-          ТЫ МОЖЕШЬ СОЗДАВАТЬ:
+          ВСЕГДА ИСПОЛЬЗУЙ ЭТИ ИМПОРТЫ:
           
-          1️⃣ МОДЫ ДЛЯ ИГР:
-          - Poppy Playtime (Lua структура, текстуры, HUD, GUI)
-          - Minecraft (Java, Fabric/Forge, 1.21.4, 1.19.2, любой)
-          - Garry's Mod (Lua, аддоны, оружие, карты)
-          - Stardew Valley (C#)
-          - Skyrim (Papyrus)
-          - Любые другие игры
+          BloodVisual.java:
+          import net.fabricmc.api.ModInitializer;
+          import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+          import net.minecraft.util.Identifier;
+          import org.slf4j.Logger;
+          import org.slf4j.LoggerFactory;
           
-          2️⃣ ПРОГРАММЫ И СКРИПТЫ:
-          - Python (боты, игры, GUI, веб-скраперы)
-          - Java (приложения, Android)
-          - JavaScript/TypeScript (сайты, игры, боты)
-          - C# (Unity, десктоп)
-          - C++ (игры, софт)
-          - Go, Rust, Ruby, PHP - любые языки
+          BloodVisualClient.java:
+          import net.fabricmc.api.ClientModInitializer;
+          import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+          import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+          import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+          import net.minecraft.client.MinecraftClient;
+          import net.minecraft.client.option.KeyBinding;
+          import net.minecraft.client.util.InputUtil;
+          import org.lwjgl.glfw.GLFW;
           
-          3️⃣ ВЕБ-ПРОЕКТЫ:
-          - Сайты (HTML/CSS/JS)
-          - React/Vue/Angular приложения
-          - Telegram/Discord боты
-          - API сервера
-          - Базы данных (SQL, MongoDB)
+          BloodOverlay.java:
+          import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+          import net.minecraft.client.MinecraftClient;
+          import net.minecraft.client.gui.DrawContext;
+          import net.minecraft.util.Identifier;
+          import com.mojang.blaze3d.systems.RenderSystem;
+          import com.veron.bloodvisual.BloodVisual;
           
-          4️⃣ ГРАФИКА И АССЕТЫ:
-          - Текстуры (PNG через base64)
-          - 3D модели (OBJ описания)
-          - Звуки (описания)
-          - Шейдеры
-          - UI/UX дизайн
+          BloodParticles.java:
+          import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+          import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
+          import net.minecraft.client.particle.*;
+          import net.minecraft.particle.SimpleParticleType;
+          import net.minecraft.world.World;
           
-          5️⃣ БАЗЫ ДАННЫХ И СТРУКТУРЫ:
-          - SQL скрипты
-          - JSON конфиги
-          - XML/YAML файлы
-          - Любые структуры папок
+          BloodMenu.java:
+          import net.minecraft.client.gui.screen.Screen;
+          import net.minecraft.client.gui.widget.ButtonWidget;
+          import net.minecraft.client.gui.widget.SliderWidget;
+          import net.minecraft.text.Text;
+          import net.minecraft.util.Identifier;
           
-          6️⃣ ДОКУМЕНТАЦИЯ:
-          - README.md
-          - Инструкции
-          - Wiki
-          - Комментарии к коду
+          BloodConfig.java:
+          import net.fabricmc.loader.api.FabricLoader;
+          import com.google.gson.Gson;
+          import com.google.gson.GsonBuilder;
+          import java.io.File;
+          import java.io.FileReader;
+          import java.io.FileWriter;
           
-          АЛГОРИТМ РАБОТЫ:
-          1. Пойми ЧТО ИМЕННО нужно создать из задачи
-          2. Определи тип проекта (мод/программа/сайт/бот)
-          3. Создай ПОЛНУЮ структуру папок под этот тип
-          4. Напиши ВЕСЬ код для всех файлов
-          5. Добавь текстуры/звуки если нужно (base64)
-          6. Создай конфиги и зависимости
-          7. Добавь README с инструкцией
+          RenderHelper.java:
+          import net.minecraft.client.render.*;
+          import net.minecraft.client.util.math.MatrixStack;
+          import org.joml.Matrix4f;
           
-          ПРИМЕРЫ:
+          Keybinds.java:
+          import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+          import net.minecraft.client.option.KeyBinding;
+          import net.minecraft.client.util.InputUtil;
+          import org.lwjgl.glfw.GLFW;
           
-          Если просят Poppy мод:
-          - /Mods/Название/ModMain.lua
-          - /Mods/Название/Content/Textures/
-          - /Mods/Название/Content/GUI/
-          - HUD.lua с хп баром
-          - GUI меню с кнопками
+          ВСЕГДА ИСПОЛЬЗУЙ ЭТИ НАЗВАНИЯ:
+          - Пакет: com.veron.bloodvisual
+          - Mod ID: bloodvisual
+          - Автор: Veron
+          - Название: BloodVisual
           
-          Если просят Minecraft мод:
-          - src/main/java/com/mod/
-          - src/main/resources/
-          - fabric.mod.json
-          - build.gradle
-          - Классы с регистрацией
+          Структура папок ТОЛЬКО:
+          src/main/java/com/veron/bloodvisual/
+          src/main/java/com/veron/bloodvisual/client/
+          src/main/java/com/veron/bloodvisual/ui/
+          src/main/java/com/veron/bloodvisual/config/
+          src/main/java/com/veron/bloodvisual/registry/
+          src/main/java/com/veron/bloodvisual/utils/
+          src/main/resources/assets/bloodvisual/textures/hud/
+          src/main/resources/assets/bloodvisual/textures/ui/
+          src/main/resources/assets/bloodvisual/textures/particles/
+          src/main/resources/assets/bloodvisual/lang/
+          src/main/resources/assets/bloodvisual/sounds/
           
-          Если просят сайт:
-          - index.html
-          - style.css
-          - script.js
-          - assets/images/
+          Теперь выполни задачу пользователя, создавая ТОЛЬКО файлы BloodVisual мода.
+          Используй ТОЛЬКО указанные импорты.
+          Названия классов ТОЛЬКО с Blood префиксом.
           
-          Если просят бота:
-          - bot.py / index.js
-          - config.json
-          - requirements.txt / package.json
-          
-          Если просят базу данных:
-          - schema.sql
-          - seeds.sql
-          - migrations/
-          
-          ВАЖНЫЕ ПРАВИЛА:
-          1. Код должен выглядеть как написанный человеком
-          2. Не идеальные отступы
-          3. Иногда пропущенные строки
-          4. Комментарии только в сложных местах
-          5. TODO оставь парочку
-          6. Реалистичные имена переменных
-          
-          ОТВЕТ ДАЙ ТОЛЬКО PYTHON КОДОМ, который создаст все файлы.
-          Используй os.makedirs() и open() для создания.
-          Для текстур используй base64.b64decode().
+          Ответь Python кодом, который создаст нужные файлы.
           """
           
-          print("🎨 Генерирую решение...")
           response = model.generate_content(prompt)
           
-          # Сохраняем код
-          with open('generator.py', 'w') as f:
-              f.write(response.text)
+          # Создаем базовые папки
+          os.makedirs("src/main/java/com/veron/bloodvisual/client", exist_ok=True)
+          os.makedirs("src/main/java/com/veron/bloodvisual/ui", exist_ok=True)
+          os.makedirs("src/main/java/com/veron/bloodvisual/config", exist_ok=True)
+          os.makedirs("src/main/java/com/veron/bloodvisual/registry", exist_ok=True)
+          os.makedirs("src/main/java/com/veron/bloodvisual/utils", exist_ok=True)
+          os.makedirs("src/main/resources/assets/bloodvisual/textures/hud", exist_ok=True)
+          os.makedirs("src/main/resources/assets/bloodvisual/textures/ui", exist_ok=True)
+          os.makedirs("src/main/resources/assets/bloodvisual/textures/particles", exist_ok=True)
+          os.makedirs("src/main/resources/assets/bloodvisual/lang", exist_ok=True)
+          os.makedirs("src/main/resources/assets/bloodvisual/sounds", exist_ok=True)
           
-          # Запускаем создание
-          print("⚙️ Создаю файлы...")
+          # Выполняем генерацию
           exec(response.text)
           
-          # Создаём отчёт
-          files_created = []
-          for root, dirs, files in os.walk('.'):
-              for file in files:
-                  if not file.startswith('.'):
-                      files_created.append(os.path.join(root, file))
+          # Если не создался fabric.mod.json - создаем сами
+          if not os.path.exists("src/main/resources/fabric.mod.json"):
+              with open("src/main/resources/fabric.mod.json", "w") as f:
+                  f.write('''{
+  "schemaVersion": 1,
+  "id": "bloodvisual",
+  "version": "1.0.0",
+  "name": "BloodVisual",
+  "description": "Visual blood effects mod by Veron",
+  "authors": ["Veron"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/bloodvisual/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.veron.bloodvisual.BloodVisual"],
+    "client": ["com.veron.bloodvisual.BloodVisualClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.4",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}''')
           
-          report = {
-              'task': task[:100],
-              'files_created': len(files_created),
-              'created_at': str(datetime.now()),
-              'files': files_created[:50]
-          }
-          
-          with open('report.json', 'w') as f:
-              json.dump(report, f, indent=2)
-          
-          print(f"✅ Готово! Создано {len(files_created)} файлов")
+          print("✅ BloodVisual mod created by Veron!")
           EOF
 
-      - name: 📦 Коммит и пуш
+      - name: 📦 Push
         run: |
-          git config --global user.name 'Universal AI'
-          git config --global user.email 'ai@creator.space'
+          git config --global user.name 'Veron'
+          git config --global user.email 'veron@bloodvisual.ru'
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 AI создал проект: $(date +%Y-%m-%d)"
+          git diff --quiet && git diff --staged --quiet || git commit -m "🩸 BloodVisual update"
           git push
 
-      - name: 💬 Комментарий в Issue
+      - name: 💬 Comment
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            let report = { files_created: 0, task: 'неизвестно' };
-            if (fs.existsSync('report.json')) {
-              report = JSON.parse(fs.readFileSync('report.json'));
-            }
-            
-            let comment = `# ✅ **AI ВЫПОЛНИЛ ЗАДАЧУ!**\n\n`;
-            comment += `📝 **Задача:** ${report.task}\n`;
-            comment += `📁 **Создано файлов:** ${report.files_created}\n\n`;
-            comment += `🔍 **Что дальше:**\n`;
-            comment += `1. Зайди во вкладку **Code**\n`;
-            comment += `2. Найди созданные файлы\n`;
-            comment += `3. Используй по назначению\n\n`;
-            comment += `---\n`;
-            comment += `*Можешь создать новый Issue с @create и новой задачей*`;
-            
-            if (context.payload.issue || context.payload.comment) {
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-            }
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🩸 **BloodVisual - Готово!**\n\n' +
+                    'Автор: Veron\n' +
+                    'Версия: 1.21.4 Fabric\n' +
+                    'Пакет: com.veron.bloodvisual\n\n' +
+                    '📁 Все файлы созданы с нашими импортами\n' +
+                    '🔧 Что дальше: пиши @create и задачу'
+            })
