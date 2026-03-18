@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "bloodvisual",
+	"version": "${version}",
+	"name": "BloodVisual",
+	"description": "A Minecraft mod for visual blood effects",
+	"authors": [
+		"Veron"
+	],
+	"contact": {
+		"homepage": "https://github.com/veron/bloodvisual",
+		"sources": "https://github.com/veron/bloodvisual"
+	},
+	"license": "MIT",
+	"icon": "assets/bloodvisual/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.veron.bloodvisual.BloodVisual"
+		],
+		"client": [
+			"com.veron.bloodvisual.client.BloodVisualClient"
+		]
+	},
+	"mixins": [
+		"bloodvisual.mixins.json",
+		{
+			"config": "bloodvisual.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
